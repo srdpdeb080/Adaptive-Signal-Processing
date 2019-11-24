@@ -1,0 +1,19 @@
+x = 1; % signal to transmit Eb = 1
+
+for snr = 0:1:20 %dB
+
+for i=1:length(x)
+random_index=1+round((length(rayleigh_dist)-1)*rand);
+h1 = rayleigh_dist(random_index);
+h2 = rayleigh_dist(random_index);
+ar1 = abs(h1)/(abs(h1)^2+abs(h2)^2);
+ar2 = abs(h2)/(abs(h1)^2+abs(h2)^2);
+y(i) = ar1*abs(h1)*x(i) + ar2*abs(h2)*x(i)+ar1*(awgn(x(i),snr)-x(i)) + ar2*(awgn(x(i),snr)-x(i));
+
+if y < 0
+    error=error+1;
+end
+end
+
+BER(snr+1)=error/length(x);
+end

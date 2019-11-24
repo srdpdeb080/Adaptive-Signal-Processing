@@ -1,0 +1,35 @@
+function [e_sq,h] = RLSFilter(n,x)
+
+% Filter Parameters
+p=4;                        % filter order
+lambda  = 1.0;              % forgetting factor
+laminv  = 1/lambda;
+
+
+% Filter Initialization
+h       = zeros(p,1);       % filter coefficients
+P       = eye(p);           % inverse correlation matrix
+e       = x*0;              % error signal
+for m = p:length(x)
+    
+    y = n(m:-1:m-p+1);
+    
+    e(m) = x(m)-h'*y;
+    e_sq(m)=e(m)*e(m);
+    
+    Pi = P*y;
+    
+    % Filter gain vector update
+    k = (Pi)/(lambda+y'*Pi);
+    
+    % Inverse correlation matrix update
+    P = (P - k*y'*P)*laminv;
+    
+    % Filter coefficients adaption
+    h = h + k*e(m);
+    
+    
+end
+end
+
+
